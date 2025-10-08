@@ -1,92 +1,196 @@
-# 🛡️ Secure Azure Environment Lab (Step-by-Step Implementation Guide)
+# 🔐 Building a Secure Azure Environment
 
 **Author:** Victor Mbogu  
-**Title:** MSc in IT Security Management | Microsoft Certified: Azure Fundamentals | Microsoft Certified: Azure Security Engineer
-**Focus:** Building a Secure Azure Environment with Logging, Key Vault Encryption, Networking, and Access Controls  
+**Title:** MSc in IT Security Management | Microsoft Certified: Azure Fundamentals | Microsoft Certified: Azure Security Engineer  
+**Focus:** Secure Azure Environment with Logging, Key Vault Encryption, Networking, and Access Controls  
 **Region:** Germany West Central  
 **Subscription:** Azure Subscription 1  
 
 ---
 
-## 📘 Overview
+## 🔑 1. Identity and Access Management (IAM)
 
-This project documents the complete hands-on setup of a **Secure Azure Environment** from scratch, including:
-- Identity & Access Management (RBAC, MFA)
-- Activity & Diagnostic Logging
-- Key Vault encryption with customer-managed keys (CMK)
-- Virtual network segmentation with NSGs
-- Bastion access for VMs (no public IPs)
-- Alert rules using Log Analytics
-- Security baselines with Microsoft Defender for Cloud
+IAM ensures only the **right people or systems** have access to resources with the **least privilege**.
 
-This serves as a reusable **blueprint** for secure Azure deployments — ideal for cybersecurity, cloud administration, or DevSecOps demonstrations.
+**Key Concepts:**
 
----
+- **Principle of Least Privilege (PoLP):** Grant minimal permissions.  
+- **Role-Based Access Control (RBAC):** Assign roles instead of direct permissions.  
+- **Privileged Identity Management (PIM):** Temporary admin access.  
+- **Conditional Access Policies:** Secure logins based on device, location, or risk.  
+- **Multi-Factor Authentication (MFA):** Adds extra security.  
+- **Service Principals & Managed Identities:** For secure, credential-free app access.  
 
-## 🧩 Architecture Overview
-
-**Key components:**
-| Component | Name | Purpose |
-|------------|------|----------|
-| Resource Group | `secure-lab-rg` | Logical container for all resources |
-| Log Analytics Workspace | `secure-lab-logs` | Centralized log collection |
-| Storage Account | `teststorageforlogs12` | Blob diagnostics & encryption test |
-| Key Vault | `securelab-keyvault` | Stores encryption keys |
-| Virtual Network | `securelab-vnet` | Private network (10.0.0.0/16) |
-| Subnets | `app-subnet`, `db-subnet`, `AzureBastionSubnet` | Segmented network tiers |
-| NSGs | `app-nsg`, `db-nsg` | Network access control |
-| VMs | `app-vm`, `db-vm` | Front-end and database tiers |
-| Bastion | `securelab-bastion` | Secure remote access |
-| Defender for Cloud | Enabled | Continuous security assessment |
+**🎯 Goal:** Prevent attackers from misusing accounts.
 
 ---
 
-## 🧱 Azure Secure Architecture Diagram
+## 📜 2. Logging
 
-                +---------------------------------------------+
-                |           Azure Resource Group              |
-                |               (secure-lab-rg)               |
-                +---------------------------------------------+
-                              |              ^
-                              |              |
-                              v              |
-               +---------------------------+ | Logs & Alerts
-               |   Log Analytics Workspace |<----------------+
-               |       (secure-lab-logs)   |
-               +---------------------------+
-                              |
-                              v
+Logging provides visibility and an **audit trail**.
 
+**Key Components:**
 
-                       +---------------------------+
-                       |     Azure Key Vault       |
-                       |   (securelab-keyvault)    |
-                       | Stores CMKs for encryption|
-                       +------------+--------------+
-                                    |
-                                    v
-                       +---------------------------+
-                       |  Storage Account          |
-                       | (teststorageforlogs12)    |
-                       | CMK Encryption via KV Key |
-                       +---------------------------+
+- **Azure Monitor & Log Analytics:** Centralized log collection.  
+- **Azure Activity Logs:** Tracks management-plane activities.  
+- **Azure AD Sign-In Logs:** Detect suspicious logins.  
+- **Microsoft Defender & Sentinel:** Advanced threat detection and SIEM/SOAR.  
+- **Audit Logs:** Track configuration changes and policy violations.  
+- **Retention Policies:** Define how long logs are kept.  
 
-                       
-| Virtual Network: securelab-vnet (10.0.0.0/16) |
-| |
-| +--------------------+ +--------------------+ |
-| | app-subnet | | db-subnet | |
-| | (10.0.1.0/24) | | (10.0.2.0/24) | |
-| |--------------------| |--------------------| |
-| | NSG: app-nsg | | NSG: db-nsg | |
-| | VM: app-vm | <------> | VM: db-vm | |
-| | Allow: 443 | | Allow: 1433 | |
-| +--------------------+ +--------------------+ |
-| |
-| +-----------------------------------------+ |
-| | AzureBastionSubnet (10.0.3.0/27) | |
-| | Bastion Host: securelab-bastion |-------------+
-| | (Secure RDP/SSH - No Public IPs) |
-| +-----------------------------------------+
-| |
-+-----------------------------------------------------------------------+
+**🎯 Goal:** Detect, investigate, and respond to threats quickly.
+
+---
+
+## 🔐 3. Encryption
+
+Encryption protects data confidentiality and integrity.
+
+**Key Concepts:**
+
+- **Encryption in Transit:** TLS/HTTPS for all communications.  
+- **Encryption at Rest:** Understand Azure Storage/Database/VM defaults.  
+- **Customer-Managed Keys (CMK):** Use Key Vault for custom keys.  
+- **Secrets Management:** Avoid hardcoding passwords/keys.  
+- **Disk Encryption:** Enable Azure Disk Encryption for sensitive VMs.  
+
+**🎯 Goal:** Keep data safe even if systems are compromised.
+
+---
+
+## 🌐 4. Network Segmentation
+
+Segment networks to **limit attack surfaces**.
+
+**Key Concepts:**
+
+- **Virtual Networks (VNets):** Isolate workloads.  
+- **Subnets:** Divide VNets by trust levels.  
+- **Network Security Groups (NSGs):** Control traffic per subnet/NIC.  
+- **Firewalls & WAF:** Inspect traffic between segments.  
+- **Zero Trust Principles:** Always verify access.  
+- **Private Endpoints:** Secure service connectivity.  
+- **Environment Segregation:** Keep dev/test/prod separate.  
+
+**🎯 Goal:** Prevent lateral movement after compromise.
+
+---
+
+## ✅ 5. Putting It All Together
+
+By mastering **IAM, Logging, Encryption, and Network Segmentation**, you mitigate **80% of cloud security risks**.  
+
+| Common Breach Cause | Mitigation |
+|--------------------|------------|
+| Compromised accounts | Strong IAM + MFA |
+| Undetected attacks | Logging & Sentinel |
+| Exposed data | Encryption at rest & transit |
+| Malware spread | Network segmentation |
+
+---
+
+## 🧩 Step-by-Step Implementation
+
+Follow these steps to **replicate this secure Azure environment**.
+
+---
+
+### 🔑 Step 1: IAM
+
+```text
+1. Create Resource Group:
+   Name: secure-lab-rg
+   Region: Germany West Central
+
+2. Enable MFA in Azure AD for admins.
+
+3. Assign RBAC roles:
+   - Owner/Contributor for admins
+   - Reader for monitoring
+   - Key Vault Crypto Officer for encryption
+
+4. Implement least privilege using custom roles if needed.
+
+5. Enable System-assigned Managed Identity for VMs and Storage.
+
+📜 Step 2: Logging:
+
+1. Create Log Analytics Workspace:
+   Name: secure-lab-logs
+   Resource Group: secure-lab-rg
+
+2. Connect Diagnostic Logs for Storage, Key Vault, and VMs.
+
+3. Test logging by uploading/deleting files.
+
+4. Create alerts:
+   - Scope: secure-lab-logs
+   - Condition: query results > 0
+   - Action: send email
+   - Name: Blob Deletion Alert
+
+🔐 Step 3: Encryption:
+
+1. Create Key Vault: securelab-keyvault
+   - Access: Azure RBAC
+   - Soft Delete: Enabled
+
+2. Generate Key: storageencryptionkey (RSA 2048)
+
+3. Enable CMK encryption on Storage Account using Key Vault.
+
+4. Configure Key Rotation:
+   - Expiry: 180 days
+   - Auto-rotation: Enabled
+   - Notify on rotation
+
+🌐 Step 4: Network Segmentation
+
+1. Create VNet: securelab-vnet (10.0.0.0/16)
+   - Subnets: app-subnet (10.0.1.0/24), db-subnet (10.0.2.0/24)
+
+2. Create NSGs:
+   - app-nsg: Inbound HTTPS, Outbound Web
+   - db-nsg: Inbound SQL, Outbound Deny
+
+3. Associate NSGs with subnets.
+
+4. Deploy VMs:
+   - App VM: app-subnet
+   - DB VM: db-subnet
+
+5. Optional: Enable Azure Bastion for secure RDP/SSH
+
+🧱 Step 5: Defender & Sentinel:
+
+- Enable Microsoft Defender for Cloud on Storage, Key Vault, Servers, Network.
+- Add Azure Sentinel to 'secure-lab-logs'.
+- Create rules for blob deletion, failed logins, and unusual network traffic.
+- Test and verify alerting.
+
+🔒 Step 6: Private Endpoints:
+
+- Create private endpoints for Storage & Key Vault.
+- Connect to 'securelab-vnet' → 'db-subnet'.
+- Disable public network access.
+- Verify private connectivity.
+
+✅ Step 7: Final Verification
+
+- Check logs in Log Analytics.
+- Confirm Defender & Sentinel monitoring.
+- Test alerts and key rotation.
+
+## 🧾 Conclusion
+
+You’ve built a **secure, monitored, and segmented Azure environment**:
+
+| Area             | Implementation             |
+|-----------------|----------------------------|
+| IAM              | RBAC & MFA                 |
+| Logging          | Centralized logs & alerts  |
+| Encryption       | Key Vault & CMK            |
+| Network Security | NSGs, subnets, Bastion     |
+| Monitoring       | Defender & Sentinel        |
+
+This project demonstrates **real-world Azure security practices**.
