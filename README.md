@@ -8,6 +8,98 @@
 
 ---
 
+## 🌍 Overview  
+
+This project demonstrates how to design and implement a **secure cloud infrastructure** on **Microsoft Azure** using best security practices.  
+
+We’ll build a **layered security environment** that covers:  
+- 🔐 Identity and Access Management (IAM)  
+- 📜 Logging and Activity Monitoring  
+- 🧱 Network Segmentation with NSGs  
+- 🔑 Data Encryption with Azure Key Vault  
+- 🧩 Secure VM Deployment with Bastion Access  
+- ⚠️ Alerts, Defender for Cloud, and Real-Time Monitoring  
+
+Every component is configured **step-by-step**, tested, and validated.  
+
+---
+
+## 🧩 Project Architecture  
+
+Here’s an overview of the key Azure components we created:  
+
+| Component | Name | Purpose |
+|------------|------|----------|
+| Resource Group | `secure-lab-rg` | Logical container for all Azure resources |
+| Users & Groups | Alice (Admin), Bob (Developer), Charlie (Viewer) | Identity and Access setup |
+| Log Analytics Workspace | `secure-lab-logs` | Centralized logging and diagnostics |
+| Storage Account | `teststorageforlogs12` | Blob diagnostics and CMK encryption testing |
+| Key Vault | `securelab-keyvault` | Holds customer-managed encryption keys |
+| Virtual Network | `securelab-vnet` | Private internal network |
+| Subnets | `app-subnet`, `db-subnet`, `AzureBastionSubnet` | Segmented network tiers |
+| NSGs | `app-nsg`, `db-nsg` | Firewall rules for inbound/outbound control |
+| VMs | `app-vm`, `db-vm` | Front-end and database workloads |
+| Bastion | `securelab-bastion` | Secure, browser-based RDP access (no public IP) |
+| Defender for Cloud | Enabled | Continuous security assessment and recommendations |
+
+---
+
+## 🧱 Architecture Diagram (with Monitoring)
+
+```text
++------------------------------------------------------+
+|             Azure Resource Group (secure-lab-rg)    |
++----------------------+-------------------------------+
+                       |            
+                       v
++-------------------------------+
+|   Log Analytics Workspace     |
+|       (secure-lab-logs)      |
++-------------------------------+
+          ^
+          |
+          +----- Logs & Alerts
+          |
+          v
++-------------------------------+
+| Microsoft Defender & Sentinel |
+|   Threat Detection & SIEM     |
++-------------------------------+
+
++------------------------------------------------------+
+| Virtual Network: securelab-vnet (10.0.0.0/16)      |
+|                                                      |
+|  +----------------------+  +----------------------+ |
+|  | app-subnet           |  | db-subnet            | |
+|  | (10.0.1.0/24)        |  | (10.0.2.0/24)        | |
+|  |----------------------|  |----------------------| |
+|  | NSG: app-nsg         |  | NSG: db-nsg          | |
+|  | VM: app-vm           |  | VM: db-vm            | |
+|  | Allow: HTTPS (443)   |  | Allow: SQL (1433)    | |
+|  +----------------------+  +----------------------+ |
+|                                                      |
+|  +---------------------------------------------+   |
+|  | AzureBastionSubnet (10.0.3.0/27)           |   |
+|  | Bastion Host: securelab-bastion            |---+
+|  | (Secure RDP/SSH - No Public IPs)          |
+|  +---------------------------------------------+
++------------------------------------------------------+
+
+                       +---------------------------+
+                       |     Azure Key Vault       |
+                       |   (securelab-keyvault)    |
+                       | Stores CMKs for encryption|
+                       +------------+--------------+
+                                    |
+                                    v
+                       +---------------------------+
+                       |  Storage Account          |
+                       | (teststorageforlogs12)    |
+                       | CMK Encryption via KV Key |
+                       +---------------------------+
+
+
+
 ## 🔑 1. Identity and Access Management (IAM)
 
 IAM ensures only the **right people or systems** have access to resources with the **least privilege**.
