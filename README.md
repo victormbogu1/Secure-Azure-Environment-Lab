@@ -160,7 +160,7 @@ Follow these steps to replicate this secure Azure environment and validate each 
 
 5. Enable System-assigned Managed Identity for VMs and Storage.
 
-📜 Step 2: Logging:
+### 📜 Step 2: Logging:
 
 1. Create Log Analytics Workspace:
    Name: secure-lab-logs
@@ -176,7 +176,7 @@ Follow these steps to replicate this secure Azure environment and validate each 
    - Action: send email
    - Name: Blob Deletion Alert
 
-🔐 Step 3: Encryption:
+### 🔐 Step 3: Encryption:
 
 1. Create Key Vault: securelab-keyvault
    - Access: Azure RBAC
@@ -191,7 +191,7 @@ Follow these steps to replicate this secure Azure environment and validate each 
    - Auto-rotation: Enabled
    - Notify on rotation
 
-🌐 Step 4: Network Segmentation
+### 🌐 Step 4: Network Segmentation
 
 1. Create VNet: securelab-vnet (10.0.0.0/16)
    - Subnets: app-subnet (10.0.1.0/24), db-subnet (10.0.2.0/24)
@@ -209,21 +209,21 @@ Follow these steps to replicate this secure Azure environment and validate each 
 5. Enable Azure Bastion for secure RDP/SSH
 - AzureBastionSubnet (10.0.3.0/26) Bastion Host: securelab-bastion ---+ (Secure RDP/SSH - No Public IPs)
 
-🧱 Step 5: Defender & Sentinel:
+### 🧱 Step 5: Defender & Sentinel:
 
 - Enable Microsoft Defender for Cloud on Storage, Key Vault, Servers, Network.
 - Add Azure Sentinel to 'secure-lab-logs'.
 - Create rules for blob deletion, failed logins, and unusual network traffic.
 - Test and verify alerting.
 
-🔒 Step 6: Private Endpoints:
+### 🔒 Step 6: Private Endpoints:
 
 - Create private endpoints for Storage & Key Vault.
 - Connect to 'securelab-vnet' → 'db-subnet'.
 - Disable public network access.
 - Verify private connectivity.
 
-✅ Step 7: Final Verification
+### ✅ Step 7: Final Verification
 
 - Check logs in Log Analytics.
 - Confirm Defender & Sentinel monitoring.
